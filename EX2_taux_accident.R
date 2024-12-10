@@ -1,7 +1,6 @@
 data_acc <- read.csv('tauxaccidents.CSV', header=TRUE, sep=",")
 
 modele_1 <- lm(y_i~.,data=data_acc)
-modele_1
 summary(modele_1)
 # Dans le modèle initial, il semble que les variables n'ont pas de sens
 
@@ -17,7 +16,6 @@ outliers_2 <- boxplot.stats(data_acc$x_i.2)$out
 which(data_acc$x_i.2 %in% c(outliers_2))            # => row 1 2 4
 
 boxplot(data_acc$x_i.3)  #--> il n'y a pas de outlier 
-
 
 boxplot(data_acc$x_i.4)
 
@@ -112,15 +110,14 @@ boxplot(new_data)
 modele_2 <- lm(y_i~.,data=new_data)
 summary(modele_2)
 
-
-# ========== AIC ==========
-# Choix du modèle par AIC
 step(modele_2)
+
 # Modele Choisi: y_i = x_i.1 + x_i.3 + x_i.4 + x_i.8 + x_i.9 + x_i.12
 # Équation linéaire: y_i = 12.08859 - 0.09550(x_i.1) - 0.14805(x_i.3) - 0.11327(x_i.4) + 1.34911(x_i.8) + 0.08108(x_i.9) - 1.27857(x_i.12)
 
 modele_3 <- lm(y_i~x_i.1+x_i.3+x_i.4+x_i.8+x_i.9+x_i.12, data=new_data)
 summary(modele_3)
+
 #Coefficients:
 #             Estimate Std. Error t value Pr(>|t|)
 # (Intercept) 12.08859    2.73669   4.417 0.000107 ***
@@ -135,38 +132,12 @@ summary(modele_3)
 # Multiple R-squared:  0.7329,    Adjusted R-squared:  0.6828
 # F-statistic: 14.63 on 6 and 32 DF,  p-value: 5.768e-08
 
-
-# ========== BIC ==========
-# Choix du modèle par BIC
-n = length(resid(modele_2))
-step(modele_2, direction="backward", k=log(n))
-
-modele_4 <- lm(y_i~x_i.1+x_i.4+x_i.8+x_i.9+x_i.12, data=new_data)
-summary(modele_4)
-
-
-# Coefficients:
-#             Estimate Std. Error t value Pr(>|t|)
-# (Intercept) 11.03540    2.73292   4.038 0.000302 ***
-# x_i.1       -0.11421    0.03019  -3.784 0.000619 ***
-# x_i.4       -0.11726    0.04361  -2.689 0.011152 *
-# x_i.8        1.54184    0.56921   2.709 0.010622 *
-# x_i.9        0.09050    0.04608   1.964 0.057988 .
-# x_i.12      -1.35353    0.42788  -3.163 0.003341 **
-# ---
-
-# Residual standard error: 1.148 on 33 degrees of freedom
-# Multiple R-squared:  0.7097,    Adjusted R-squared:  0.6658 
-# F-statistic: 16.14 on 5 and 33 DF,  p-value: 4.76e-08
-
-
 # Residuals:
-res_modele_4 <- residuals(modele_4)
-shapiro.test(res_modele_4)
-
-# > shapiro.test(res_modele_4)
+res_modele_3 <- residuals(modele_3)
+shapiro.test(res_modele_3)
 
 #         Shapiro-Wilk normality test
 
-# data:  res_modele_4
-# W = 0.97982, p-value = 0.6972  =>  Suit de loi normal 
+# data:  res_modele_3
+# W = 0.99097, p-value = 0.9863
+# p-value = 0.9863 -> Ne rejette pas H0 =>  Suit de loi normal 
